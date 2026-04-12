@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500&display=swap');
+@import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #03040a;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #03040a; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
+::selection { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.7); }
+
+/* Pulse ring for star nodes */
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* Orbit spin for skills section */
+@keyframes orbit-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@layer components {
+  .star-node {
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .star-node:hover {
+    transform: scale(1.15);
+  }
+
+  .star-glow {
+    position: absolute;
+    inset: -12px;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .star-node:hover .star-glow {
+    opacity: 1;
+  }
+
+  .constellation-line {
+    stroke-dasharray: 4 6;
+    animation: dash-flow 8s linear infinite;
+  }
+
+  @keyframes dash-flow {
+    to { stroke-dashoffset: -100; }
+  }
+
+  .section-panel {
+    background: rgba(3, 4, 10, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 0.5px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .panel-shimmer {
+    position: relative;
+  }
+
+  .panel-shimmer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 0.75px;
+    background: linear-gradient(135deg,
+      rgba(255,255,255,0.12) 0%,
+      rgba(255,255,255,0) 50%,
+      rgba(255,255,255,0.06) 100%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+}
