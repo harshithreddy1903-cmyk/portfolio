@@ -5,9 +5,9 @@
     Explore my software, data science and machine learning work through an interactive constellation.
   </p>
   <p>
-    <a href="https://portfolio-tawny-two-qybj4abzzl.vercel.app/"><strong>Explore the Portfolio ↗</strong></a>
+    <a href="https://harshithreddy.vercel.app/"><strong>Explore the Portfolio ↗</strong></a>
     &nbsp;·&nbsp;
-    <a href="https://portfolio-tawny-two-qybj4abzzl.vercel.app/Harshith_Reddy_Resume.pdf">Download Resume</a>
+    <a href="https://harshithreddy.vercel.app/Harshith_Reddy_Resume.pdf">Download Resume</a>
     &nbsp;·&nbsp;
     <a href="https://github.com/harshithreddy1903-cmyk/portfolio/issues">Report an Issue</a>
   </p>
@@ -33,7 +33,7 @@ This portfolio brings my latest resume, skills, education and project work into 
 - **About:** my academic background, interests and leadership experience.
 - **Projects:** a featured deployed application, a team project, and clearly marked work in progress.
 - **Skills:** programming, web development, APIs, databases and machine learning skills reflected in my resume.
-- **Resume:** a downloadable PDF at [`/Harshith_Reddy_Resume.pdf`](https://portfolio-tawny-two-qybj4abzzl.vercel.app/Harshith_Reddy_Resume.pdf).
+- **Resume:** a downloadable PDF at [`/Harshith_Reddy_Resume.pdf`](https://harshithreddy.vercel.app/Harshith_Reddy_Resume.pdf).
 - **Contact:** direct email, GitHub and LinkedIn links.
 
 ### Design and Navigation
@@ -156,7 +156,7 @@ The portfolio is hosted on **Vercel** using the Vite build:
 
 - **Build command:** `npm run build`
 - **Output directory:** `dist`
-- **Live site:** [portfolio-tawny-two-qybj4abzzl.vercel.app](https://portfolio-tawny-two-qybj4abzzl.vercel.app/)
+- **Live site:** [harshithreddy.vercel.app](https://harshithreddy.vercel.app/)
 - **Source:** [harshithreddy1903-cmyk/portfolio](https://github.com/harshithreddy1903-cmyk/portfolio)
 
 ---
