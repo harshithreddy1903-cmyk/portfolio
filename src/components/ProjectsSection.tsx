@@ -47,7 +47,7 @@ export default function ProjectsSection() {
           {projects.map((project, i) => {
             const Icon = project.icon
             return (
-              <motion.article id={project.id} key={project.id} initial={reduceMotion ? false : { opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} viewport={{ once: true, amount: 0.1 }} className={`section-panel panel-shimmer overflow-hidden rounded-3xl ${i === 0 ? 'featured-project' : ''}`}>
+              <motion.article id={project.id} key={project.id} initial={reduceMotion ? false : { opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} viewport={{ once: true, amount: 0.1 }} className="section-panel panel-shimmer overflow-hidden rounded-3xl">
                 <div className="grid md:grid-cols-[200px_1fr]">
                   <div className="flex items-center justify-between gap-5 border-b border-white/10 p-6 md:flex-col md:items-start md:border-r md:border-b-0 md:p-8">
                     <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10" style={{ color: project.accent, background: `${project.accent}0c` }}><Icon size={26} strokeWidth={1.3} aria-hidden="true" /></div>
