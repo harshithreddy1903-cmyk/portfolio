@@ -1,190 +1,74 @@
-import { motion } from 'framer-motion'
-import { ArrowUpRight } from 'lucide-react'
-
-interface ProjectClusterProps {
-  color: string
-  positions: Array<{ cx: number; cy: number; r: number }>
-}
-
-function StarCluster({ color, positions }: ProjectClusterProps) {
-  return (
-    <svg width="80" height="80" viewBox="0 0 80 80" className="mb-4">
-      {/* Connection lines */}
-      {positions.slice(0, -1).map((pos, i) => (
-        <line
-          key={i}
-          x1={pos.cx}
-          y1={pos.cy}
-          x2={positions[i + 1].cx}
-          y2={positions[i + 1].cy}
-          stroke={color}
-          strokeOpacity="0.15"
-          strokeWidth="0.5"
-          strokeDasharray="2 4"
-        />
-      ))}
-      {positions.map((pos, i) => (
-        <circle key={i} cx={pos.cx} cy={pos.cy} r={pos.r} fill={color} fillOpacity="0.5" />
-      ))}
-    </svg>
-  )
-}
+import { motion, useReducedMotion } from 'framer-motion'
+import { ArrowUpRight, ExternalLink, Sprout, ScanText, BookOpen, Layers } from 'lucide-react'
 
 const projects = [
   {
-    num: '01',
-    year: '2024',
-    accent: '#7eb8f7',
-    tag: 'RAG · Generative AI',
-    title: 'Telegram Study Bot',
-    description:
-      'A Q&A chatbot powered by a Retrieval-Augmented Generation pipeline. Queries a custom knowledge base using Python and foundational Generative AI concepts.',
-    pills: ['Python', 'RAG', 'GenAI', 'Telegram API'],
-    cluster: [
-      { cx: 15, cy: 30, r: 3 },
-      { cx: 30, cy: 15, r: 2.5 },
-      { cx: 50, cy: 25, r: 4 },
-      { cx: 40, cy: 50, r: 2 },
-      { cx: 60, cy: 45, r: 3 },
-      { cx: 70, cy: 60, r: 2.5 },
-    ],
+    id: 'mandipulse', title: 'MandiPulse', subtitle: 'Karnataka Market Assistant', status: 'Deployed', accent: '#7eb8f7', icon: Sprout,
+    description: 'A conversational market assistant that turns official AGMARKNET crop records into clear price comparisons and practical buying plans.',
+    details: ['React and FastAPI with Gemini API guidance grounded in official market records.', 'Buying plans in kilograms, quintals and tonnes, with freight and budget estimates, visual PDF exports, and optional Supabase sign-in.'],
+    evidence: '203 automated tests across backend and frontend logic',
+    pills: ['React', 'FastAPI', 'Gemini API', 'Supabase', 'Vercel'],
+    live: 'https://mandipulse-rosy.vercel.app/', repo: 'https://github.com/harshithreddy1903-cmyk/MandiPulse',
   },
   {
-    num: '02',
-    year: '2024',
-    accent: '#a78bfa',
-    tag: 'Python · DSA · OOP',
-    title: 'Kannada Prosody Identifier',
-    description:
-      'Parses and identifies Kannada poetic meters (Chandassu). Models syllables, feet, and meters using OOP — classifies Kanda Padya, Shatpadi, and Vruttas via custom DSA algorithms.',
-    pills: ['Python', 'DSA', 'OOP', 'Unicode'],
-    cluster: [
-      { cx: 20, cy: 20, r: 2.5 },
-      { cx: 40, cy: 15, r: 3 },
-      { cx: 55, cy: 35, r: 2 },
-      { cx: 30, cy: 45, r: 3.5 },
-      { cx: 50, cy: 55, r: 2.5 },
-      { cx: 65, cy: 50, r: 2 },
-      { cx: 20, cy: 60, r: 3 },
-    ],
+    id: 'kannada', title: 'Kannada Chandas Identifier', subtitle: 'Classical language, computational rules', status: 'Team project', accent: '#a78bfa', icon: ScanText,
+    description: 'Developed in a four-member team: a Flask application that identifies poetic meters in classical Kannada poetry.',
+    details: ['The rule-based NLP pipeline syllabifies Unicode text, classifies Laghu/Guru patterns and matches traditional meters.', 'Supports poem analysis, image scanning, saved history and PDF export; deployed on Render.'],
+    evidence: 'Rule-based NLP / four-member team',
+    pills: ['Python', 'Flask', 'Unicode', 'NLP'],
+    live: null, repo: 'https://github.com/harshithreddy1903-cmyk/Kannada_Chandas_Identifier_phase_1',
   },
   {
-    num: '03',
-    year: '2023',
-    accent: '#34d399',
-    tag: 'OpenCV · MySQL · Python',
-    title: 'Face Recognition Attendance',
-    description:
-      'Automated attendance system using OpenCV for real-time facial recognition. Identifies registered individuals from a live feed and logs attendance to a MySQL database.',
-    pills: ['Python', 'OpenCV', 'MySQL', 'Computer Vision'],
-    cluster: [
-      { cx: 25, cy: 25, r: 3 },
-      { cx: 45, cy: 20, r: 2 },
-      { cx: 60, cy: 30, r: 3.5 },
-      { cx: 35, cy: 50, r: 2.5 },
-      { cx: 55, cy: 55, r: 2 },
-      { cx: 15, cy: 55, r: 2 },
-      { cx: 40, cy: 65, r: 3 },
-      { cx: 65, cy: 60, r: 2.5 },
-    ],
+    id: 'academic-bot', title: 'Academic Resources Bot', subtitle: 'Answers grounded in course material', status: 'In progress', accent: '#f9a8d4', icon: BookOpen,
+    description: 'Collaborating in a four-member team on a Telegram assistant that retrieves answers from college course PDFs using a RAG pipeline.',
+    details: ['Developing PDF extraction and ChromaDB vector indexing workflows.', 'Exploring multimodal processing of course text and diagrams with LLaVA.'],
+    evidence: 'Ongoing team development', pills: ['Python', 'RAG', 'ChromaDB', 'LLaVA'],
+    live: null, repo: 'https://github.com/harshithreddy1903-cmyk/Telegram_Study_Bot',
+  },
+  {
+    id: 'palm-leaf', title: 'Palm Leaf Manuscript Translator', subtitle: 'Preserving Old Kannada manuscripts', status: 'In progress', accent: '#86d7b1', icon: Layers,
+    description: 'Collaborating in a four-member team on an image restoration, OCR and translation pipeline for degraded Old Kannada palm-leaf manuscripts.',
+    details: ['Developing a U-Net model with a ResNet34 backbone for manuscript binarization.', 'Reviewed 12+ research papers on image processing and Kannada NLP to inform the design.'],
+    evidence: '12+ research papers reviewed', pills: ['Python', 'PyTorch', 'U-Net', 'Computer Vision'],
+    live: null, repo: null,
   },
 ]
 
-const sectionAnim = {
-  initial: { opacity: 0, y: 50 } as const,
-  whileInView: { opacity: 1, y: 0 } as const,
-  transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] as const },
-  viewport: { once: true, margin: '-60px' },
-}
-
-const labelAnim = {
-  initial: { opacity: 0, x: -20 } as const,
-  whileInView: { opacity: 1, x: 0 } as const,
-  transition: { duration: 0.6 },
-  viewport: { once: true, margin: '-60px' },
-}
-
 export default function ProjectsSection() {
+  const reduceMotion = useReducedMotion()
   return (
-    <section id="projects" className="relative z-10 min-h-screen px-8 py-32">
-      <div className="max-w-5xl mx-auto">
-        {/* Header */}
-        <div className="flex justify-between items-end mb-20">
-          <div>
-            <motion.p {...labelAnim} className="text-white/25 text-xs tracking-[0.3em] uppercase font-light mb-4">
-              002 — projects
-            </motion.p>
-            <motion.h2
-              {...sectionAnim}
-              style={{ fontFamily: "'Cormorant Garamond', serif" }}
-              className="text-6xl md:text-7xl text-white/80 font-light tracking-tight leading-none italic"
-            >
-              what i've built.
-            </motion.h2>
-          </div>
-          <span className="hidden md:block text-white/15 text-xs tracking-[0.3em] uppercase">
-            3 projects
-          </span>
+    <section id="projects" className="relative z-10 px-6 py-20 md:px-8 md:py-28">
+      <div className="mx-auto max-w-5xl">
+        <div className="mb-12 flex items-end justify-between gap-5">
+          <div><p className="section-kicker">002 / selected work</p><h2 className="display-font text-5xl font-light tracking-tight text-white/90 italic md:text-7xl">From idea to interface.</h2></div>
+          <span className="hidden text-xs tracking-widest text-white/50 uppercase md:block">4 projects</span>
         </div>
-
-        {/* Project cards */}
         <div className="flex flex-col gap-6">
-          {projects.map((project, i) => (
-            <motion.div
-              key={project.num}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] as const }}
-              viewport={{ once: true, margin: '-60px' }}
-              className="section-panel panel-shimmer rounded-3xl overflow-hidden group cursor-pointer hover:border-white/10 transition-all duration-500"
-            >
-              <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-0">
-                {/* Left panel */}
-                <div className="p-8 flex flex-col justify-between md:border-r border-white/5">
-                  <StarCluster color={project.accent} positions={project.cluster} />
-                  <div>
-                    <p className="text-white/15 text-xs tracking-widest">{project.num}</p>
-                    <p className="text-white/20 text-xs mt-1">{project.year}</p>
+          {projects.map((project, i) => {
+            const Icon = project.icon
+            return (
+              <motion.article id={project.id} key={project.id} initial={reduceMotion ? false : { opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} viewport={{ once: true, amount: 0.1 }} className={`section-panel panel-shimmer overflow-hidden rounded-3xl ${i === 0 ? 'featured-project' : ''}`}>
+                <div className="grid md:grid-cols-[200px_1fr]">
+                  <div className="flex items-center justify-between gap-5 border-b border-white/10 p-6 md:flex-col md:items-start md:border-r md:border-b-0 md:p-8">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10" style={{ color: project.accent, background: `${project.accent}0c` }}><Icon size={26} strokeWidth={1.3} aria-hidden="true" /></div>
+                    <div className="md:mt-12"><p className="text-xs tracking-[0.2em] text-white/45">0{i + 1}</p><p className="mt-2 text-xs" style={{ color: project.accent }}>{project.status}</p></div>
+                  </div>
+                  <div className="p-6 md:p-8">
+                    <p className="mb-3 text-[10px] tracking-[0.18em] uppercase" style={{ color: project.accent }}>{project.subtitle}</p>
+                    <h3 className="display-font mb-4 text-3xl font-light text-white/95 md:text-4xl">{project.title}</h3>
+                    <p className="text-sm leading-relaxed text-white/70">{project.description}</p>
+                    <ul className="mt-4 space-y-2 pl-4 text-sm leading-relaxed text-white/60 list-disc">{project.details.map(detail => <li key={detail}>{detail}</li>)}</ul>
+                    <p className="mt-5 text-xs text-white/60">{project.evidence}</p>
+                    <div className="mt-5 flex flex-wrap gap-2">{project.pills.map(pill => <span key={pill} className="rounded-full border border-white/15 px-3 py-1.5 text-[11px] text-white/65">{pill}</span>)}</div>
+                    {(project.live || project.repo) && <div className="mt-6 flex flex-wrap gap-3">
+                      {project.live && <a href={project.live} target="_blank" rel="noopener noreferrer" className="primary-action text-xs" aria-label={`Open ${project.title} live website`}>Visit live project <ArrowUpRight size={14} aria-hidden="true" /></a>}
+                      {project.repo && <a href={project.repo} target="_blank" rel="noopener noreferrer" className="secondary-action text-xs" aria-label={`View ${project.title} on GitHub`}><ExternalLink size={14} aria-hidden="true" />{project.id === 'kannada' ? 'Phase 1 source' : 'View source'}</a>}
+                    </div>}
                   </div>
                 </div>
-
-                {/* Right panel */}
-                <div className="p-8">
-                  <p
-                    className="text-[10px] tracking-[0.2em] uppercase mb-3"
-                    style={{ color: project.accent }}
-                  >
-                    {project.tag}
-                  </p>
-                  <h3
-                    style={{ fontFamily: "'Cormorant Garamond', serif" }}
-                    className="text-3xl text-white/80 font-light mb-4 group-hover:text-white/95 transition-colors duration-500 italic"
-                  >
-                    {project.title}
-                  </h3>
-                  <p className="text-white/35 text-sm leading-relaxed font-light">
-                    {project.description}
-                  </p>
-                  <div className="flex gap-2 mt-6 flex-wrap">
-                    {project.pills.map((pill) => (
-                      <span
-                        key={pill}
-                        className="text-[10px] px-3 py-1 rounded-full border border-white/8 text-white/30"
-                      >
-                        {pill}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="flex justify-end mt-4">
-                    <ArrowUpRight
-                      size={16}
-                      className="text-white/20 group-hover:text-white/60 transition-colors duration-300"
-                    />
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.article>
+            )
+          })}
         </div>
       </div>
     </section>

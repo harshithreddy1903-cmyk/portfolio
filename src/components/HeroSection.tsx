@@ -1,245 +1,57 @@
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronDown } from 'lucide-react'
+import { motion, useReducedMotion } from 'framer-motion'
+import { ArrowDown, ArrowUpRight, Download } from 'lucide-react'
 
-const scrollToSection = (id: string) => {
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-}
-
-interface StarNodeProps {
-  left: string
-  top: string
-  color: string
-  size: number
-  label?: string
-  target: string
-  delay: number
-  glowColor?: string
-}
-
-function StarNode({ left, top, color, size, label, target, delay, glowColor }: StarNodeProps) {
-  return (
-    <motion.div
-      className="star-node"
-      style={{
-        position: 'absolute',
-        left,
-        top,
-        transform: 'translate(-50%, -50%)',
-        zIndex: 15,
-      }}
-      initial={{ opacity: 0, scale: 0 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] as const }}
-      onClick={() => scrollToSection(target)}
-    >
-      {/* Glow halo */}
-      <div
-        className="star-glow"
-        style={{
-          background: `radial-gradient(circle, ${glowColor || color}26 0%, transparent 70%)`,
-        }}
-      />
-      {/* Star circle */}
-      <div
-        style={{
-          width: `${size}px`,
-          height: `${size}px`,
-          borderRadius: '50%',
-          background: color,
-          boxShadow: `0 0 ${size * 0.4}px ${size * 0.15}px ${color}4D, 0 0 ${size * 1.4}px ${size * 0.35}px ${color}14`,
-        }}
-      />
-      {/* Pulse ring */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: '-8px',
-          borderRadius: '50%',
-          border: `0.5px solid ${color}26`,
-          animation: 'pulse-ring 3s ease-out infinite',
-        }}
-      />
-      {/* Label */}
-      {label && (
-        <span
-          style={{
-            position: 'absolute',
-            top: '120%',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            fontFamily: 'Inter, sans-serif',
-            fontSize: '10px',
-            letterSpacing: '0.15em',
-            color: 'rgba(255,255,255,0.35)',
-            whiteSpace: 'nowrap',
-            textTransform: 'uppercase',
-          }}
-        >
-          {label}
-        </span>
-      )}
-    </motion.div>
-  )
-}
-
-const constellationNodes = [
-  { left: '50%', top: '45%', color: '#ffffff', size: 28, target: 'about', delay: 0, isCentre: true },
-  { left: '28%', top: '30%', color: '#e2e8f0', size: 18, label: 'About', target: 'about', delay: 0.15 },
-  { left: '68%', top: '25%', color: '#7eb8f7', size: 16, label: 'Study Bot', target: 'projects', delay: 0.3 },
-  { left: '72%', top: '55%', color: '#a78bfa', size: 16, label: 'Kannada', target: 'projects', delay: 0.45 },
-  { left: '38%', top: '68%', color: '#34d399', size: 16, label: 'FaceAuth', target: 'projects', delay: 0.6 },
-  { left: '18%', top: '58%', color: '#fbbf24', size: 14, label: 'Skills', target: 'skills', delay: 0.75 },
-  { left: '55%', top: '75%', color: '#f9a8d4', size: 14, label: 'Contact', target: 'contact', delay: 0.9 },
+const nodes = [
+  { x: 50, y: 43, size: 23, color: '#f1f5ff', label: 'About me', target: 'about' },
+  { x: 26, y: 25, size: 12, color: '#7eb8f7', label: 'MandiPulse', target: 'mandipulse' },
+  { x: 77, y: 22, size: 13, color: '#a78bfa', label: 'Kannada NLP', target: 'kannada' },
+  { x: 81, y: 61, size: 10, color: '#34d399', label: 'Research', target: 'palm-leaf' },
+  { x: 31, y: 76, size: 11, color: '#f9a8d4', label: 'Contact', target: 'contact' },
+  { x: 13, y: 54, size: 9, color: '#fbbf24', label: 'Skills', target: 'skills' },
 ]
-
-const constellationLines = [
-  { x1: 50, y1: 45, x2: 28, y2: 30 },
-  { x1: 28, y1: 30, x2: 68, y2: 25 },
-  { x1: 68, y1: 25, x2: 72, y2: 55 },
-  { x1: 72, y1: 55, x2: 38, y2: 68 },
-  { x1: 38, y1: 68, x2: 18, y2: 58 },
-  { x1: 18, y1: 58, x2: 55, y2: 75 },
-]
+const lines = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0], [0, 2]]
 
 export default function HeroSection() {
-  const [hoveredCentre, setHoveredCentre] = useState(false)
-
+  const reduceMotion = useReducedMotion()
   return (
-    <section id="hero" className="min-h-screen relative flex flex-col overflow-hidden">
-      {/* Navbar */}
-      <nav className="relative z-20 px-8 py-6 flex justify-between items-center">
-        <span className="text-white/30 text-xs tracking-[0.3em] font-light">HK</span>
-        <div className="flex items-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400/50 animate-pulse" />
-          <span className="text-white/25 text-xs tracking-widest font-light">available for work</span>
+    <section id="hero" className="hero-section relative overflow-hidden">
+      <nav aria-label="Main navigation" className="site-nav mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-5 px-6 py-6 md:px-8">
+        <a href="#hero" aria-label="Harshith Reddy home" className="text-sm font-medium tracking-[0.25em] text-white/90">HR<span className="text-blue-300">.</span></a>
+        <div className="flex flex-wrap items-center gap-5 text-xs text-white/65 sm:gap-7 sm:text-sm">
+          <a href="#about" className="hover:text-white">About</a>
+          <a href="#projects" className="hover:text-white">Projects</a>
+          <a href="#skills" className="hover:text-white">Skills</a>
+          <a href="#contact" className="hover:text-white">Contact</a>
+          <a href="/Harshith_Reddy_Resume.pdf" download className="hidden items-center rounded-full border border-white/20 px-4 py-2 text-white/85 sm:inline-flex">Resume <Download size={13} className="ml-2" aria-hidden="true" /></a>
         </div>
       </nav>
-
-      {/* Constellation SVG lines */}
-      <svg
-        className="absolute inset-0 w-full h-full z-10 pointer-events-none hidden md:block"
-        viewBox="0 0 100 100"
-        preserveAspectRatio="none"
-      >
-        {constellationLines.map((line, i) => (
-          <motion.line
-            key={i}
-            x1={line.x1}
-            y1={line.y1}
-            x2={line.x2}
-            y2={line.y2}
-            stroke="rgba(255,255,255,0.08)"
-            strokeWidth="0.15"
-            className="constellation-line"
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ pathLength: 1, opacity: 1 }}
-            transition={{ duration: 1.5, delay: 0.5 + i * 0.2 }}
-          />
-        ))}
-      </svg>
-
-      {/* Star nodes */}
-      <div className="absolute inset-0 z-10">
-        {constellationNodes.map((node, i) =>
-          node.isCentre ? (
-            <motion.div
-              key={i}
-              className="star-node"
-              style={{
-                position: 'absolute',
-                left: node.left,
-                top: node.top,
-                transform: 'translate(-50%, -50%)',
-                zIndex: 15,
-              }}
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0, ease: [0.16, 1, 0.3, 1] as const }}
-              onMouseEnter={() => setHoveredCentre(true)}
-              onMouseLeave={() => setHoveredCentre(false)}
-              onClick={() => scrollToSection('about')}
-            >
-              <div
-                className="star-glow"
-                style={{
-                  background: 'radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%)',
-                }}
-              />
-              <div
-                style={{
-                  width: '28px',
-                  height: '28px',
-                  borderRadius: '50%',
-                  background: 'rgba(255,255,255,0.9)',
-                  boxShadow:
-                    '0 0 12px 4px rgba(255,255,255,0.3), 0 0 40px 10px rgba(255,255,255,0.08)',
-                }}
-              />
-              <div
-                style={{
-                  position: 'absolute',
-                  inset: '-8px',
-                  borderRadius: '50%',
-                  border: '0.5px solid rgba(255,255,255,0.15)',
-                  animation: 'pulse-ring 3s ease-out infinite',
-                }}
-              />
-
-              {/* Centre tooltip */}
-              <AnimatePresence>
-                {hoveredCentre && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    transition={{ duration: 0.25 }}
-                    className="section-panel panel-shimmer rounded-2xl px-6 py-4 text-center"
-                    style={{
-                      position: 'absolute',
-                      bottom: '140%',
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      whiteSpace: 'nowrap',
-                      pointerEvents: 'none',
-                    }}
-                  >
-                    <p
-                      style={{ fontFamily: "'Cormorant Garamond', serif" }}
-                      className="text-xl text-white/80 font-light italic"
-                    >
-                      Harshith Reddy K M
-                    </p>
-                    <p className="text-xs text-white/35 tracking-widest uppercase mt-1">
-                      CS Student · Freelancer
-                    </p>
-                    <p className="text-xs text-white/25 mt-1">Bangalore, India</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          ) : (
-            <StarNode key={i} {...node} />
-          )
-        )}
-      </div>
-
-      {/* Bottom hint */}
-      <div className="absolute bottom-8 left-0 right-0 text-center z-10">
-        <p className="text-white/15 text-xs tracking-[0.3em] uppercase font-light">
-          hover stars to explore · click to navigate
-        </p>
-        <div className="mt-3 flex justify-center">
-          <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
-            className="flex flex-col items-center"
-          >
-            <ChevronDown size={14} className="text-white/15" />
-            <ChevronDown size={14} className="text-white/10 -mt-2" />
-          </motion.div>
+      <div className="mx-auto grid w-full max-w-6xl items-center gap-3 px-6 pb-14 pt-14 md:grid-cols-[1.1fr_1fr] md:gap-12 md:px-8 md:py-24">
+        <motion.div initial={reduceMotion ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="relative z-10">
+          <p className="mb-7 flex items-center gap-2.5 text-xs tracking-[0.16em] text-emerald-200/85 uppercase"><span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-300" />Open to software engineering internships</p>
+          <h1 className="display-font text-[clamp(3.7rem,7vw,6.5rem)] leading-[0.96] font-light tracking-tight text-white/95">Harshith<br /><span className="italic text-blue-200">Reddy K M.</span></h1>
+          <p className="mt-7 max-w-md text-base leading-relaxed text-white/65">I build useful software with thoughtful interfaces, reliable APIs, and AI grounded in real information.</p>
+          <p className="mt-4 text-sm leading-relaxed text-white/50">Final-year CSE (Data Science) student at SVIT, Bangalore. Expected graduation: 2027.</p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a href="#projects" className="primary-action">Explore my work <ArrowUpRight size={16} aria-hidden="true" /></a>
+            <a href="/Harshith_Reddy_Resume.pdf" download className="secondary-action">Download resume <Download size={15} aria-hidden="true" /></a>
+          </div>
+          <div className="mt-9 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-white/50"><span>React + FastAPI</span><span>Applied AI & NLP</span><span>Built and deployed</span></div>
+        </motion.div>
+        <div className="constellation-map relative mt-10 h-[320px] md:mt-0 md:h-[460px]" aria-label="Explore the portfolio constellation">
+          <div className="absolute inset-0 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(87,104,194,0.13),transparent_65%)]" aria-hidden="true" />
+          <svg className="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            {lines.map(([a, b], i) => <line key={i} x1={nodes[a].x} y1={nodes[a].y} x2={nodes[b].x} y2={nodes[b].y} stroke="rgba(170,191,255,0.24)" strokeWidth="0.18" strokeDasharray="1 1.5" />)}
+          </svg>
+          {nodes.map((node, i) => (
+            <motion.a key={node.target} href={`#${node.target}`} aria-label={`Explore ${node.label}`} className="constellation-node group" style={{ left: `${node.x}%`, top: `${node.y}%` }} initial={reduceMotion ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.1, duration: 0.5 }}>
+              <span className="constellation-star" style={{ width: node.size, height: node.size, background: node.color, boxShadow: `0 0 18px ${node.color}65, 0 0 45px ${node.color}25` }} />
+              <span className="constellation-label group-hover:text-white">{node.label}</span>
+            </motion.a>
+          ))}
+          <p className="absolute bottom-0 w-full text-center text-[10px] tracking-[0.22em] text-white/45 uppercase">A constellation of things I build</p>
         </div>
       </div>
+      <a href="#about" className="mx-auto mb-8 flex w-fit items-center gap-3 text-xs tracking-widest text-white/45">SCROLL TO EXPLORE <ArrowDown size={13} aria-hidden="true" /></a>
     </section>
   )
 }

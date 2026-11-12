@@ -1,127 +1,67 @@
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef } from 'react'
+import { MotionConfig, useReducedMotion } from 'framer-motion'
 import HeroSection from './components/HeroSection'
 import AboutSection from './components/AboutSection'
 import ProjectsSection from './components/ProjectsSection'
 import SkillsSection from './components/SkillsSection'
 import ContactSection from './components/ContactSection'
 
-interface Star {
-  x: number
-  y: number
-  radius: number
-  opacity: number
-  twinkleSpeed: number
-  twinkleOffset: number
-  color: string
-}
-
-function generateStars(w: number, h: number, count: number): Star[] {
-  const stars: Star[] = []
-  for (let i = 0; i < count; i++) {
-    const colorRoll = Math.random()
-    let color = '#ffffff'
-    if (colorRoll > 0.9) color = '#ffd9b3'
-    else if (colorRoll > 0.8) color = '#b3d4ff'
-
-    stars.push({
-      x: Math.random() * w,
-      y: Math.random() * h,
-      radius: 0.3 + Math.random() * 1.5,
-      opacity: 0.1 + Math.random() * 0.6,
-      twinkleSpeed: 0.003 + Math.random() * 0.009,
-      twinkleOffset: Math.random() * Math.PI * 2,
-      color,
-    })
-  }
-  return stars
-}
-
 export default function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const starsRef = useRef<Star[]>([])
-  const animIdRef = useRef<number>(0)
-  const scrollRef = useRef(0)
-
-  const initCanvas = useCallback(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
-    starsRef.current = generateStars(canvas.width, canvas.height, 280)
-  }, [])
+  const reduceMotion = useReducedMotion()
 
   useEffect(() => {
-    initCanvas()
-
     const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-      const now = Date.now()
-
-      starsRef.current.forEach((star) => {
-        const alpha =
-          star.opacity * (0.5 + 0.5 * Math.sin(now * star.twinkleSpeed + star.twinkleOffset))
+    const ctx = canvas?.getContext('2d')
+    if (!canvas || !ctx) return
+    let frame = 0
+    let stars: Array<{ x: number; y: number; radius: number; alpha: number; phase: number }> = []
+    const resize = () => {
+      const ratio = Math.min(window.devicePixelRatio || 1, 2)
+      canvas.width = window.innerWidth * ratio
+      canvas.height = window.innerHeight * ratio
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0)
+      stars = Array.from({ length: window.innerWidth < 640 ? 80 : 180 }, () => ({
+        x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight,
+        radius: 0.4 + Math.random(), alpha: 0.12 + Math.random() * 0.35, phase: Math.random() * Math.PI * 2,
+      }))
+      paint(0)
+    }
+    const paint = (time: number) => {
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
+      for (const star of stars) {
+        ctx.globalAlpha = reduceMotion ? star.alpha : star.alpha * (0.75 + Math.sin(time * 0.0004 + star.phase) * 0.25)
         ctx.beginPath()
         ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2)
-        ctx.fillStyle = star.color
-        ctx.globalAlpha = alpha
+        ctx.fillStyle = '#dce6ff'
         ctx.fill()
-        ctx.globalAlpha = 1
-      })
-
-      animIdRef.current = requestAnimationFrame(draw)
+      }
+      ctx.globalAlpha = 1
     }
-
-    draw()
-
-    const handleResize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-      starsRef.current = generateStars(canvas.width, canvas.height, 280)
+    const animate = (time: number) => {
+      if (!document.hidden) paint(time)
+      frame = window.requestAnimationFrame(animate)
     }
-
-    const handleScroll = () => {
-      scrollRef.current = window.scrollY
-      canvas.style.transform = `translateY(${scrollRef.current * 0.15}px)`
-    }
-
-    window.addEventListener('resize', handleResize)
-    window.addEventListener('scroll', handleScroll, { passive: true })
-
+    resize()
+    if (!reduceMotion) frame = window.requestAnimationFrame(animate)
+    window.addEventListener('resize', resize)
     return () => {
-      cancelAnimationFrame(animIdRef.current)
-      window.removeEventListener('resize', handleResize)
-      window.removeEventListener('scroll', handleScroll)
+      window.cancelAnimationFrame(frame)
+      window.removeEventListener('resize', resize)
     }
-  }, [initCanvas])
+  }, [reduceMotion])
 
   return (
-    <>
-      {/* Star field canvas - fixed behind everything */}
-      <canvas
-        ref={canvasRef}
-        style={{
-          position: 'fixed',
-          inset: 0,
-          zIndex: 0,
-          pointerEvents: 'none',
-          width: '100%',
-          height: '100%',
-        }}
-      />
-
-      {/* All content above the canvas */}
-      <div style={{ position: 'relative', zIndex: 1 }}>
+    <MotionConfig reducedMotion="user">
+      <a className="skip-link" href="#main-content">Skip to content</a>
+      <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 h-full w-full" />
+      <main id="main-content" className="relative z-10">
         <HeroSection />
         <AboutSection />
         <ProjectsSection />
         <SkillsSection />
         <ContactSection />
-      </div>
-    </>
+      </main>
+    </MotionConfig>
   )
 }

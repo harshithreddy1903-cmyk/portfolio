@@ -1,174 +1,35 @@
-import { motion } from 'framer-motion'
-import { Mail, ExternalLink, Globe } from 'lucide-react'
+import { motion, useReducedMotion } from 'framer-motion'
+import { Mail, ExternalLink, Globe, Download, ArrowUpRight } from 'lucide-react'
 
-const accentColors = ['#ffffff', '#e2e8f0', '#7eb8f7', '#a78bfa', '#34d399', '#fbbf24', '#f9a8d4']
-
-const contactCards = [
-  {
-    dot: '#f9a8d4',
-    icon: Mail,
-    label: 'email',
-    value: 'harshithreddy1903@gmail.com',
-    href: 'mailto:harshithreddy1903@gmail.com',
-  },
-  {
-    dot: '#e2e8f0',
-    icon: ExternalLink,
-    label: 'github',
-    value: 'harshithreddy1903-cmyk',
-    href: 'https://github.com/harshithreddy1903-cmyk',
-  },
-  {
-    dot: '#7eb8f7',
-    icon: Globe,
-    label: 'linkedin',
-    value: 'linkedin profile',
-    href: 'https://bit.ly/47wTKYv',
-  },
+const contacts = [
+  { label: 'Email', value: 'harshithreddy1903@gmail.com', href: 'mailto:harshithreddy1903@gmail.com', icon: Mail },
+  { label: 'GitHub', value: 'harshithreddy1903-cmyk', href: 'https://github.com/harshithreddy1903-cmyk', icon: ExternalLink },
+  { label: 'LinkedIn', value: 'Connect on LinkedIn', href: 'https://11nk.dev/5wmwt4s', icon: Globe },
 ]
 
-// Star burst decorative SVG
-function StarBurst() {
-  const rays = 8
-  const radius = 50
-  const centre = 60
-
-  return (
-    <motion.svg
-      width="120"
-      height="120"
-      viewBox="0 0 120 120"
-      className="mx-auto mb-12"
-      initial={{ opacity: 0, scale: 0.6, rotate: -30 }}
-      whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
-      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] as const }}
-      viewport={{ once: true }}
-    >
-      {Array.from({ length: rays }).map((_, i) => {
-        const angle = (i * 360) / rays
-        const rad = (angle * Math.PI) / 180
-        const x2 = centre + radius * Math.cos(rad)
-        const y2 = centre + radius * Math.sin(rad)
-        const dotColor = accentColors[i % accentColors.length]
-
-        return (
-          <g key={i}>
-            <line
-              x1={centre}
-              y1={centre}
-              x2={x2}
-              y2={y2}
-              stroke="rgba(255,255,255,0.12)"
-              strokeWidth="0.5"
-            />
-            <circle cx={x2} cy={y2} r={1.5} fill={dotColor} fillOpacity="0.6" />
-          </g>
-        )
-      })}
-      {/* Centre dot */}
-      <circle cx={centre} cy={centre} r={4} fill="rgba(255,255,255,0.4)" />
-    </motion.svg>
-  )
-}
-
-const sectionAnim = {
-  initial: { opacity: 0, y: 50 } as const,
-  whileInView: { opacity: 1, y: 0 } as const,
-  transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] as const },
-  viewport: { once: true, margin: '-60px' },
-}
-
-const labelAnim = {
-  initial: { opacity: 0, x: -20 } as const,
-  whileInView: { opacity: 1, x: 0 } as const,
-  transition: { duration: 0.6 },
-  viewport: { once: true, margin: '-60px' },
-}
-
 export default function ContactSection() {
+  const reduceMotion = useReducedMotion()
   return (
-    <section
-      id="contact"
-      className="relative z-10 min-h-[90vh] flex flex-col items-center justify-center px-8 py-32 text-center"
-    >
-      <StarBurst />
-
-      <motion.p {...labelAnim} className="text-white/25 text-xs tracking-[0.3em] uppercase font-light mb-6">
-        004 — contact
-      </motion.p>
-
-      <motion.h2
-        {...sectionAnim}
-        style={{ fontFamily: "'Cormorant Garamond', serif" }}
-        className="text-[10vw] leading-none tracking-tight text-white/80 font-light italic"
-      >
-        let's
-        <br />
-        connect.
-      </motion.h2>
-
-      <motion.p
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.3 }}
-        viewport={{ once: true }}
-        className="text-white/25 text-sm font-light tracking-wide mt-6 mb-16"
-      >
-        Open to freelance projects, collaborations, and opportunities.
-      </motion.p>
-
-      {/* Contact cards */}
-      <div className="flex flex-col md:flex-row gap-4 justify-center w-full max-w-4xl">
-        {contactCards.map((card, i) => {
-          const Icon = card.icon
-          return (
-            <motion.a
-              key={card.label}
-              href={card.href}
-              target={card.label !== 'email' ? '_blank' : undefined}
-              rel={card.label !== 'email' ? 'noopener noreferrer' : undefined}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] as const }}
-              viewport={{ once: true }}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              className="section-panel panel-shimmer rounded-2xl px-8 py-5 flex items-center gap-4 cursor-pointer group hover:border-white/15 transition-all duration-300 text-left flex-1"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full" style={{ background: card.dot }} />
-                <Icon size={16} className="text-white/30 group-hover:text-white/60 transition-colors" />
-              </div>
-              <div>
-                <p className="text-white/25 text-xs tracking-widest uppercase font-light">
-                  {card.label}
-                </p>
-                <p className="text-white/55 text-sm font-light group-hover:text-white/80 transition-colors duration-300">
-                  {card.value}
-                </p>
-              </div>
-            </motion.a>
-          )
-        })}
-      </div>
-
-      {/* Footer */}
-      <div className="mt-24 border-t border-white/5 pt-8 w-full max-w-5xl flex justify-between items-center">
-        <span className="text-white/15 text-xs tracking-widest font-light">
-          © 2025 Harshith Reddy K M
-        </span>
-        <div className="flex gap-1.5">
-          {accentColors.map((color, i) => (
-            <div
-              key={i}
-              className="w-1.5 h-1.5 rounded-full opacity-40"
-              style={{ background: color }}
-            />
+    <section id="contact" className="relative z-10 px-6 pt-20 pb-8 md:px-8 md:pt-28">
+      <div className="mx-auto max-w-5xl">
+        <motion.div initial={reduceMotion ? false : { opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="py-12 text-center md:py-20">
+          <p className="section-kicker">004 / get in touch</p>
+          <h2 className="display-font text-6xl font-light tracking-tight text-white/90 italic md:text-8xl">Let's build<br />something useful.</h2>
+          <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-white/60">I'm looking for software engineering and full-stack internships, and opportunities to learn through meaningful projects.</p>
+          <a href="/Harshith_Reddy_Resume.pdf" download className="secondary-action mt-7">Download my resume <Download size={15} aria-hidden="true" /></a>
+        </motion.div>
+        <div className="grid gap-4 md:grid-cols-3">
+          {contacts.map(({ label, value, href, icon: Icon }) => (
+            <a key={label} href={href} target={label === 'Email' ? undefined : '_blank'} rel={label === 'Email' ? undefined : 'noopener noreferrer'} className="section-panel panel-shimmer group flex min-w-0 items-start gap-4 rounded-2xl p-5 transition-colors hover:border-blue-200/35">
+              <Icon size={18} className="mt-0.5 shrink-0 text-blue-200/75" aria-hidden="true" />
+              <div className="min-w-0"><p className="text-[10px] tracking-[0.2em] text-white/50 uppercase">{label}</p><p className="mt-2 break-words text-sm leading-relaxed text-white/80">{value}</p></div>
+              <ArrowUpRight size={14} className="ml-auto shrink-0 text-white/40" aria-hidden="true" />
+            </a>
           ))}
         </div>
-        <span className="text-white/15 text-xs tracking-widest font-light">
-          Bangalore, Karnataka, India
-        </span>
+        <footer className="mt-16 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-6 text-xs text-white/45">
+          <span>Harshith Reddy K M</span><span>Bangalore, Karnataka, India</span><a href="#hero" className="text-white/60 hover:text-white">Back to the stars ↑</a>
+        </footer>
       </div>
     </section>
   )
